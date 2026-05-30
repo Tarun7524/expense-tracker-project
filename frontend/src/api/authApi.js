@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const LOGIN_URL = "http://127.0.0.1:8000/api/token/";
+const LOGIN_URL = "https://expense-tracker-api-pg6z.onrender.com";
 
 export const loginUser = (loginData) => {
   return axios.post(LOGIN_URL, loginData);

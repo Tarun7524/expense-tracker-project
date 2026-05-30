@@ -744,3 +744,380 @@ th {
 
   font-size: 28px;
 }
+/* =========================
+   VOICE EXPENSE CARD
+========================= */
+
+.voice-card {
+  margin-top: 35px;
+  padding: 35px;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  flex-wrap: wrap;
+}
+
+/* Left content */
+.voice-content h2 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #2f5bea;
+
+  margin-bottom: 10px;
+}
+
+.voice-content p {
+  font-size: 17px;
+  color: #555;
+}
+
+/* Example text */
+.voice-example {
+  margin-left: 10px;
+  color: #7c3aed;
+  font-weight: 700;
+}
+
+/* Button */
+.voice-btn {
+  border: none;
+  outline: none;
+
+  padding: 18px 35px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(
+    135deg,
+    #315bea,
+    #7c3aed
+  );
+
+  color: white;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+/* Hover effect */
+.voice-btn:hover {
+  transform: translateY(-3px);
+
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.35);
+}
+
+/* Listening state */
+.voice-btn.listening {
+  background: linear-gradient(
+    135deg,
+    #16a34a,
+    #22c55e
+  );
+
+  animation: pulse 1s infinite;
+}
+
+/* Spoken text box */
+.spoken-text {
+  width: 100%;
+
+  margin-top: 10px;
+
+  padding: 16px;
+
+  border-radius: 18px;
+
+  background: #f3f6ff;
+
+  color: #111827;
+
+  font-size: 17px;
+
+  font-weight: 500;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0
+      rgba(34, 197, 94, 0.6);
+  }
+
+  70% {
+    box-shadow: 0 0 0 14px
+      rgba(34, 197, 94, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0
+      rgba(34, 197, 94, 0);
+  }
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .voice-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .voice-content h2 {
+    font-size: 28px;
+  }
+
+  .voice-btn {
+    width: 100%;
+  }
+}
+
+/* Dark / Light Mode */
+
+.app {
+  min-height: 100vh;
+  transition: 0.3s ease;
+}
+
+.light-mode {
+  background: #f4f7fb;
+  color: #111827;
+}
+
+.dark-mode {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.theme-toggle {
+  border: none;
+  padding: 12px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #315bea, #7c3aed);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 25px;
+}
+
+.dark-mode .navbar-custom,
+.dark-mode .glass-card,
+.dark-mode .voice-card,
+.dark-mode .summary-card,
+.dark-mode .footer {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode p,
+.dark-mode td,
+.dark-mode th {
+  color: #f8fafc;
+}
+
+.dark-mode input,
+.dark-mode select {
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid #334155;
+}
+
+.dark-mode table {
+  background: #1e293b;
+}
+
+.dark-mode tr {
+  border-color: #334155;
+}
+
+.dark-mode .spoken-text {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+/* =========================
+   DARK / LIGHT MODE
+========================= */
+
+.app {
+  min-height: 100vh;
+  transition: 0.3s ease;
+}
+
+.light-mode {
+  background: #f4f7fb;
+  color: #111827;
+}
+
+.dark-mode {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+/* Dark mode cards */
+.dark-mode .navbar-custom,
+.dark-mode .glass-card,
+.dark-mode .voice-card,
+.dark-mode .summary-card,
+.dark-mode .footer {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Dark mode headings and text */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode p {
+  color: #f8fafc !important;
+}
+
+/* Sidebar Dark / Light Mode Button - same style as menu options */
+.sidebar-theme-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  border: none;
+  padding: 18px 22px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+
+  font-size: 22px;
+  font-weight: 800;
+  text-align: left;
+
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 35px;
+  margin-bottom: 18px;
+}
+
+.sidebar-theme-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: translateX(5px);
+}
+
+/* Logout button same matching style */
+.sidebar-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  border: none;
+  padding: 18px 22px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+
+  font-size: 22px;
+  font-weight: 800;
+  text-align: left;
+
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: translateX(5px);
+}
+
+/* Dark mode inputs */
+.dark-mode input,
+.dark-mode select {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #475569 !important;
+}
+
+.dark-mode input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* =========================
+   DARK MODE TABLE FIX
+========================= */
+
+.dark-mode table {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-collapse: collapse;
+}
+
+.dark-mode thead tr {
+  background: #334155 !important;
+}
+
+.dark-mode th {
+  background: #334155 !important;
+  color: #ffffff !important;
+  font-weight: 800;
+}
+
+.dark-mode tbody tr {
+  background: #1e293b !important;
+  border-bottom: 1px solid #475569 !important;
+}
+
+.dark-mode tbody tr:hover {
+  background: #273449 !important;
+}
+
+.dark-mode td {
+  color: #f8fafc !important;
+  font-weight: 600;
+}
+
+.dark-mode .amount {
+  color: #86efac !important;
+  font-weight: 800;
+}
+
+.dark-mode .empty-text {
+  color: #cbd5e1 !important;
+}
+
+/* Category badge text should be visible */
+.dark-mode .category-badge {
+  color: #111827 !important;
+  font-weight: 800;
+}
+
+/* Spoken text dark mode */
+.dark-mode .spoken-text {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* Export button remains visible */
+.dark-mode .export-btn {
+  background: #16a34a !important;
+  color: #ffffff !important;
+}
+
+/* Delete button remains visible */
+.dark-mode .delete-btn {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+}

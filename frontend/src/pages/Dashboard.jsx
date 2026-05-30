@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "../App.css";
 
+import VoiceExpense from "../components/VoiceExpense";
+
 import {
   getExpenses,
   addExpense,
@@ -29,17 +31,29 @@ ChartJS.register(
 );
 
 function Dashboard() {
+  // Store all expenses
   const [expenses, setExpenses] = useState([]);
+
+  // Search input value
   const [searchText, setSearchText] = useState("");
+
+  // Category filter value
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Sidebar open / close
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Dark mode state
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Add expense form data
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
     category: "",
   });
 
+  // Category colors for charts and badges
   const categoryColors = {
     Food: "#FFF3B0",
     Bills: "#C4B5FD",
@@ -49,6 +63,7 @@ function Dashboard() {
     Entertainment: "#D1D5DB",
   };
 
+  // Fetch expenses from backend
   const fetchExpenses = async () => {
     try {
       const response = await getExpenses();
@@ -58,18 +73,22 @@ function Dashboard() {
     }
   };
 
+  // Load expenses when page opens
   useEffect(() => {
     fetchExpenses();
   }, []);
 
+  // Total expense amount
   const totalAmount = expenses.reduce(
     (total, expense) => total + Number(expense.amount),
     0
   );
 
+  // Split chart data
   const first50Expenses = expenses.slice(0, 50);
   const remainingExpenses = expenses.slice(50);
 
+  // Search and category filter logic
   const filteredExpenses = expenses.filter((expense) => {
     const matchSearch = expense.title
       .toLowerCase()
@@ -81,9 +100,11 @@ function Dashboard() {
     return matchSearch && matchCategory;
   });
 
+  // Calculate total for chart sections
   const getTotal = (list) =>
     list.reduce((total, expense) => total + Number(expense.amount), 0);
 
+  // Create bar chart data
   const createChartData = (list, label) => ({
     labels: list.map((expense) => expense.title),
     datasets: [
@@ -98,12 +119,14 @@ function Dashboard() {
     ],
   });
 
+  // Calculate category totals for pie chart
   const categoryTotals = expenses.reduce((acc, expense) => {
     acc[expense.category] =
       (acc[expense.category] || 0) + Number(expense.amount);
     return acc;
   }, {});
 
+  // Pie chart data
   const pieData = {
     labels: Object.keys(categoryTotals),
     datasets: [
@@ -117,6 +140,7 @@ function Dashboard() {
     ],
   };
 
+  // Bar chart options
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -132,11 +156,13 @@ function Dashboard() {
     },
   };
 
+  // Pie chart options
   const pieOptions = {
     responsive: true,
     maintainAspectRatio: false,
   };
 
+  // Handle form input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -144,6 +170,7 @@ function Dashboard() {
     });
   };
 
+  // Add expense manually
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -156,6 +183,7 @@ function Dashboard() {
     }
   };
 
+  // Delete expense
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this expense?")) return;
 
@@ -167,6 +195,7 @@ function Dashboard() {
     }
   };
 
+  // Logout user
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -174,7 +203,8 @@ function Dashboard() {
   };
 
   return (
-    <>
+    <div className={darkMode ? "app dark-mode" : "app light-mode"}>
+      {/* Navbar */}
       <nav className="navbar-custom">
         <div className="brand">
           <button className="menu-btn" onClick={() => setSidebarOpen(true)}>
@@ -191,6 +221,7 @@ function Dashboard() {
         </div>
       </nav>
 
+      {/* Sidebar */}
       {sidebarOpen && (
         <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}>
           <aside className="sidebar" onClick={(e) => e.stopPropagation()}>
@@ -214,6 +245,14 @@ function Dashboard() {
               🗂 Categories
             </a>
 
+            {/* Dark / Light mode button inside sidebar */}
+            <button
+              className="sidebar-theme-btn"
+              onClick={() => setDarkMode(!darkMode)}
+            >
+              {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
+            </button>
+
             <button className="sidebar-logout" onClick={handleLogout}>
               ↪ Logout
             </button>
@@ -222,6 +261,7 @@ function Dashboard() {
       )}
 
       <main className="main-container">
+        {/* Summary Cards */}
         <section className="dashboard-grid" id="dashboard">
           <div className="summary-card expense-card">
             <div className="dashboard-icon">💼</div>
@@ -244,6 +284,7 @@ function Dashboard() {
           </div>
         </section>
 
+        {/* Add Expense Form */}
         <section className="glass-card" id="categories">
           <h2 className="section-title">➕ Add Expense</h2>
 
@@ -285,6 +326,10 @@ function Dashboard() {
           </form>
         </section>
 
+        {/* Voice Expense Component */}
+        <VoiceExpense onExpenseAdded={fetchExpenses} />
+
+        {/* First Chart */}
         <section className="glass-card" id="analytics">
           <div className="analytics-header">
             <div>
@@ -311,7 +356,9 @@ function Dashboard() {
               </span>
 
               <span className="count-badge">
-                {expenses.length <= 50 ? expenses.length : first50Expenses.length}{" "}
+                {expenses.length <= 50
+                  ? expenses.length
+                  : first50Expenses.length}{" "}
                 Records
               </span>
             </div>
@@ -330,6 +377,7 @@ function Dashboard() {
           </div>
         </section>
 
+        {/* Second Chart */}
         {expenses.length > 50 && (
           <section className="glass-card second-chart">
             <div className="analytics-header">
@@ -361,6 +409,7 @@ function Dashboard() {
           </section>
         )}
 
+        {/* Pie Chart */}
         <section className="glass-card">
           <h2 className="chart-title">🥧 Category Wise Expenses</h2>
 
@@ -369,6 +418,7 @@ function Dashboard() {
           </div>
         </section>
 
+        {/* Transaction History */}
         <section className="glass-card" id="transactions">
           <h2 className="section-title">🧾 Transaction History</h2>
 
@@ -450,6 +500,7 @@ function Dashboard() {
           </div>
         </section>
 
+        {/* Footer */}
         <footer className="footer">
           <div className="footer-content">
             <p className="copyright">
@@ -460,7 +511,7 @@ function Dashboard() {
           </div>
         </footer>
       </main>
-    </>
+    </div>
   );
 }
 
