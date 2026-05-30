@@ -1,8 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
+from django.contrib.auth.models import User
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .models import Expense
 from .serializers import ExpenseSerializer
@@ -11,7 +14,6 @@ import openpyxl
 import json
 
 
-# Old Django template homepage
 def index(request):
     if request.method == "POST":
         title = request.POST.get("title")
@@ -45,20 +47,17 @@ def index(request):
     return render(request, "index.html", context)
 
 
-# Old Django template delete
 def delete_expense(request, id):
     expense = get_object_or_404(Expense, id=id)
     expense.delete()
     return redirect("index")
 
 
-# React API ViewSet
 class ExpenseViewSet(viewsets.ModelViewSet):
     queryset = Expense.objects.all().order_by("-id")
     serializer_class = ExpenseSerializer
 
 
-# Export Excel API
 def export_excel(request):
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -85,3 +84,28 @@ def export_excel(request):
 
     wb.save(response)
     return response
+
+
+@api_view(["POST"])
+def register_user(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    if not username or not password:
+        return Response(
+            {"error": "Username and password are required"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if User.objects.filter(username=username).exists():
+        return Response(
+            {"error": "Username already exists"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    User.objects.create_user(username=username, password=password)
+
+    return Response(
+        {"message": "User created successfully"},
+        status=status.HTTP_201_CREATED
+    )

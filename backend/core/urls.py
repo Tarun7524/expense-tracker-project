@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from tracker.views import index, delete_expense, export_excel, ExpenseViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
+from tracker.views import index, delete_expense, export_excel, ExpenseViewSet, register_user
 router = DefaultRouter()
 router.register("expenses", ExpenseViewSet, basename="expenses")
 
@@ -38,4 +38,5 @@ urlpatterns = [
     # JWT routes
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/register/", register_user, name="register_user"),
 ]
