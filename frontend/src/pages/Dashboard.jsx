@@ -3,11 +3,7 @@ import "../App.css";
 
 import VoiceExpense from "../components/VoiceExpense";
 
-import {
-  getExpenses,
-  addExpense,
-  deleteExpense,
-} from "../api/expenseApi";
+import { getExpenses, addExpense, deleteExpense } from "../api/expenseApi";
 
 import {
   Chart as ChartJS,
@@ -21,39 +17,21 @@ import {
 
 import { Bar, Pie } from "react-chartjs-2";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
 function Dashboard() {
-  // Store all expenses
   const [expenses, setExpenses] = useState([]);
-
-  // Search input value
   const [searchText, setSearchText] = useState("");
-
-  // Category filter value
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  // Sidebar open / close
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Dark mode state
   const [darkMode, setDarkMode] = useState(false);
 
-  // Add expense form data
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
     category: "",
   });
 
-  // Category colors for charts and badges
   const categoryColors = {
     Food: "#FFF3B0",
     Bills: "#C4B5FD",
@@ -61,9 +39,10 @@ function Dashboard() {
     Travel: "#BDE0FE",
     Other: "#D1FAE5",
     Entertainment: "#D1D5DB",
+    Education: "#BBF7D0",
+    Health: "#FECACA",
   };
 
-  // Fetch expenses from backend
   const fetchExpenses = async () => {
     try {
       const response = await getExpenses();
@@ -73,22 +52,15 @@ function Dashboard() {
     }
   };
 
-  // Load expenses when page opens
   useEffect(() => {
     fetchExpenses();
   }, []);
 
-  // Total expense amount
   const totalAmount = expenses.reduce(
     (total, expense) => total + Number(expense.amount),
     0
   );
 
-  // Split chart data
-  const first50Expenses = expenses.slice(0, 50);
-  const remainingExpenses = expenses.slice(50);
-
-  // Search and category filter logic
   const filteredExpenses = expenses.filter((expense) => {
     const matchSearch = expense.title
       .toLowerCase()
@@ -100,17 +72,12 @@ function Dashboard() {
     return matchSearch && matchCategory;
   });
 
-  // Calculate total for chart sections
-  const getTotal = (list) =>
-    list.reduce((total, expense) => total + Number(expense.amount), 0);
-
-  // Create bar chart data
   const createChartData = (list, label) => ({
     labels: list.map((expense) => expense.title),
     datasets: [
       {
         label,
-        data: list.map((expense) => expense.amount),
+        data: list.map((expense) => Number(expense.amount)),
         backgroundColor: list.map(
           (expense) => categoryColors[expense.category] || "#cccccc"
         ),
@@ -119,14 +86,12 @@ function Dashboard() {
     ],
   });
 
-  // Calculate category totals for pie chart
   const categoryTotals = expenses.reduce((acc, expense) => {
     acc[expense.category] =
       (acc[expense.category] || 0) + Number(expense.amount);
     return acc;
   }, {});
 
-  // Pie chart data
   const pieData = {
     labels: Object.keys(categoryTotals),
     datasets: [
@@ -140,7 +105,6 @@ function Dashboard() {
     ],
   };
 
-  // Bar chart options
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -156,13 +120,11 @@ function Dashboard() {
     },
   };
 
-  // Pie chart options
   const pieOptions = {
     responsive: true,
     maintainAspectRatio: false,
   };
 
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -170,7 +132,6 @@ function Dashboard() {
     });
   };
 
-  // Add expense manually
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -183,7 +144,6 @@ function Dashboard() {
     }
   };
 
-  // Delete expense
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this expense?")) return;
 
@@ -195,7 +155,6 @@ function Dashboard() {
     }
   };
 
-  // Logout user
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -204,7 +163,6 @@ function Dashboard() {
 
   return (
     <div className={darkMode ? "app dark-mode" : "app light-mode"}>
-      {/* Navbar */}
       <nav className="navbar-custom">
         <div className="brand">
           <button className="menu-btn" onClick={() => setSidebarOpen(true)}>
@@ -221,7 +179,6 @@ function Dashboard() {
         </div>
       </nav>
 
-      {/* Sidebar */}
       {sidebarOpen && (
         <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}>
           <aside className="sidebar" onClick={(e) => e.stopPropagation()}>
@@ -245,7 +202,6 @@ function Dashboard() {
               🗂 Categories
             </a>
 
-            {/* Dark / Light mode button inside sidebar */}
             <button
               className="sidebar-theme-btn"
               onClick={() => setDarkMode(!darkMode)}
@@ -261,7 +217,6 @@ function Dashboard() {
       )}
 
       <main className="main-container">
-        {/* Summary Cards */}
         <section className="dashboard-grid" id="dashboard">
           <div className="summary-card expense-card">
             <div className="dashboard-icon">💼</div>
@@ -284,7 +239,6 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* Add Expense Form */}
         <section className="glass-card" id="categories">
           <h2 className="section-title">➕ Add Expense</h2>
 
@@ -319,6 +273,9 @@ function Dashboard() {
               <option value="Bills">Bills</option>
               <option value="Shopping">Shopping</option>
               <option value="Travel">Travel</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Education">Education</option>
+              <option value="Health">Health</option>
               <option value="Other">Other</option>
             </select>
 
@@ -326,90 +283,38 @@ function Dashboard() {
           </form>
         </section>
 
-        {/* Voice Expense Component */}
         <VoiceExpense onExpenseAdded={fetchExpenses} />
 
-        {/* First Chart */}
         <section className="glass-card" id="analytics">
           <div className="analytics-header">
             <div>
-              <h2 className="chart-title">
-                {expenses.length <= 50
-                  ? "📊 Visual Analytics - All Expenses"
-                  : "📊 Visual Analytics - First 50 Expenses"}
-              </h2>
-
-              <p>
-                {expenses.length <= 50
-                  ? "Showing all expenses in one graph"
-                  : "Expenses 1 to 50 overview"}
-              </p>
+              <h2 className="chart-title">📊 Visual Analytics - All Expenses</h2>
+              <p>Showing all expenses in one graph</p>
             </div>
 
             <div className="badge-group">
               <span className="total-badge">
-                ₹
-                {expenses.length <= 50
-                  ? totalAmount.toFixed(2)
-                  : getTotal(first50Expenses).toFixed(2)}{" "}
-                Total
+                ₹{totalAmount.toFixed(2)} Total
               </span>
 
-              <span className="count-badge">
-                {expenses.length <= 50
-                  ? expenses.length
-                  : first50Expenses.length}{" "}
-                Records
-              </span>
+              <span className="count-badge">{expenses.length} Records</span>
             </div>
           </div>
 
-          <div className="chart-box">
+          <div
+            className="chart-box"
+            style={{
+              height: "500px",
+              overflowX: "auto",
+            }}
+          >
             <Bar
-              data={createChartData(
-                expenses.length <= 50 ? expenses : first50Expenses,
-                expenses.length <= 50
-                  ? "Expense Amount ₹"
-                  : "First 50 Expenses ₹"
-              )}
+              data={createChartData(expenses, "Expense Amount ₹")}
               options={chartOptions}
             />
           </div>
         </section>
 
-        {/* Second Chart */}
-        {expenses.length > 50 && (
-          <section className="glass-card second-chart">
-            <div className="analytics-header">
-              <div>
-                <h2 className="chart-title">📊 Remaining Expenses</h2>
-                <p>Expenses 51 to {expenses.length} overview</p>
-              </div>
-
-              <div className="badge-group">
-                <span className="total-badge">
-                  ₹{getTotal(remainingExpenses).toFixed(2)} Total
-                </span>
-
-                <span className="count-badge">
-                  {remainingExpenses.length} Records
-                </span>
-              </div>
-            </div>
-
-            <div className="chart-box">
-              <Bar
-                data={createChartData(
-                  remainingExpenses,
-                  "Remaining Expenses ₹"
-                )}
-                options={chartOptions}
-              />
-            </div>
-          </section>
-        )}
-
-        {/* Pie Chart */}
         <section className="glass-card">
           <h2 className="chart-title">🥧 Category Wise Expenses</h2>
 
@@ -418,7 +323,6 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* Transaction History */}
         <section className="glass-card" id="transactions">
           <h2 className="section-title">🧾 Transaction History</h2>
 
@@ -439,11 +343,14 @@ function Dashboard() {
               <option value="Bills">Bills</option>
               <option value="Shopping">Shopping</option>
               <option value="Travel">Travel</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Education">Education</option>
+              <option value="Health">Health</option>
               <option value="Other">Other</option>
             </select>
 
             <a
-              href="http://127.0.0.1:8000/api/export-excel/"
+              href="https://expense-tracker-api-pg6z.onrender.com/api/export-excel/"
               className="export-btn"
             >
               ⬇ Export Excel
@@ -500,7 +407,6 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="footer">
           <div className="footer-content">
             <p className="copyright">
