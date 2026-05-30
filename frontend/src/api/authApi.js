@@ -1,7 +1,11 @@
 import axios from "axios";
 
-const LOGIN_URL = "https://expense-tracker-api-pg6z.onrender.com";
+const API_URL = "https://expense-tracker-api-pg6z.onrender.com/api/expenses/";
 
-export const loginUser = (loginData) => {
-  return axios.post(LOGIN_URL, loginData);
-};
+export const getExpenses = () => axios.get(API_URL);
+
+export const addExpense = (expenseData) =>
+  axios.post(API_URL, expenseData);
+
+export const deleteExpense = (id) =>
+  axios.delete(`${API_URL}${id}/`);
